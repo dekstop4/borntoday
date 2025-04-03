@@ -1,0 +1,40 @@
+{% extends "star/base.html" %}
+
+{% block title %}Карта сайта - Borntoday.ru{% endblock %}
+
+{% block content %}
+<h1>Карта сайта</h1>
+
+{% if stars %}
+    <div class="row">
+        {% for star in stars %}
+            <div class="col-md-4">
+                <div class="card mb-3">
+                    <img src="{% if star.photo %}{{ star.photo.url }}{% else %}/static/people.png{% endif %}"
+                         alt="{{ star.name }}" class="card-img-top"
+                         style="max-height: 200px; object-fit: cover;">
+
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <a href="{% url 'star_detail' star.id %}">{{ star.name }}</a>
+                        </h5>
+                        <p class="card-text">
+                            <strong>Дата рождения:</strong> {{ star.birth_date|date:"d E Y" }}<br>
+                            <strong>Возраст:</strong> {{ star.get_age }} лет<br>
+                            <strong>Страна:</strong> {{ star.country.name }}<br>
+                            <strong>Вид деятельности:</strong>
+                            {% for category in star.categories.all %}
+                                {{ category.title }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </p>
+                        <a href="{% url 'star_detail' star.id %}" class="btn btn-outline-primary btn-sm">Подробнее</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p>Знаменитостей пока нет.</p>
+{% endif %}
+
+{% endblock %}

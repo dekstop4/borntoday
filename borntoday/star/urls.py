@@ -16,4 +16,7 @@ urlpatterns = [
 
     #Добавление знаменитости
     path('add/', views.add_star, name='add_star'),
+
+    #Список всех знаменитостей
+    path('sitemap/', views.sitemap, name='sitemap')
 ]

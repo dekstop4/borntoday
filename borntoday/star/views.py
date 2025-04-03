@@ -149,3 +149,47 @@ def add_star(request):
         'star_categories': categories,
     }
     return render(request, 'star/add-star.html', context)
+
+def sitemap(request):
+    """
+    Страница со всеми звёздами
+    """
+    # Получаем все опубликованные звезды
+    all_stars = Star.objects.filter(is_published=True).order_by("name")
+
+    # Получаем текущую дату
+    today = date.today()
+    tomorrow = today + timedelta(days=1)
+    day_after_tomorrow = today + timedelta(days=2)
+
+    # Находим звезд с днями рождения
+    today_stars = []
+    tomorrow_stars = []
+    day_after_tomorrow_stars = []
+
+    for star in all_stars:
+        # Проверяем месяц и день (без учета года)
+        if star.birth_date.month == today.month and star.birth_date.day == today.day:
+            today_stars.append(star)
+        elif star.birth_date.month == tomorrow.month and star.birth_date.day == tomorrow.day:
+            tomorrow_stars.append(star)
+        elif star.birth_date.month == day_after_tomorrow.month and star.birth_date.day == day_after_tomorrow.day:
+            day_after_tomorrow_stars.append(star)
+
+    # Получаем все страны и категории для меню
+    countries = Country.objects.all()
+    categories = Category.objects.all()
+
+    context = {
+        'stars': all_stars,
+        'today_stars': today_stars,
+        'tomorrow_stars': tomorrow_stars,
+        'day_after_tomorrow_stars': day_after_tomorrow_stars,
+        'today_date': today,
+        'tomorrow_date': tomorrow,
+        'day_after_tomorrow_date': day_after_tomorrow,
+        'star_countries': countries,
+        'star_categories': categories,
+        'title': 'Дни рождения звезд'
+    }
+    return render(request, 'star/sitemap.html', context)
